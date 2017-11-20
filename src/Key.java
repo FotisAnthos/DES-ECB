@@ -37,13 +37,11 @@ public class Key {
 		//keyBlock.blockDisplay();
 		keyBlock.permutate(this.pc1);
 		//keyBlock.blockDisplay();
-		leftAndRight();
 
-
-		//leftSubSet.get(0).blockDisplay();
-		//rightSubSet.get(0).blockDisplay();
 
 		createSubSets();
+		//leftSubSet.get(0).blockDisplay();
+		//rightSubSet.get(0).blockDisplay();
 		//leftSubSet.get(4).blockDisplay();
 		//rightSubSet.get(4).blockDisplay();
 		createSubKeys();
@@ -51,7 +49,7 @@ public class Key {
 
 	}
 
-	
+
 
 	private void testKey() {
 		List<Integer> test = new ArrayList<Integer>();
@@ -74,7 +72,7 @@ public class Key {
 		keyBlock.updateBlock(block);
 	}
 
-	public Block createBlock(String key) {//key block
+	private Block createBlock(String key) {//key block
 		Block block = new Block("Key");
 		//String temp;
 		String temp = new BigInteger(key, 16).toString(2);
@@ -89,7 +87,9 @@ public class Key {
 		return block;
 	}
 
-	private void leftAndRight() {
+
+	private void createSubSets() {
+
 		leftSubSet = new  ArrayList<Block>();
 		rightSubSet = new  ArrayList<Block>();
 		leftSubSet.add(new Block("Left-0"));
@@ -100,9 +100,7 @@ public class Key {
 		for(int i= 28; i<56; i++) {
 			rightSubSet.get(0).addElement(keyBlock.getBlockElement(i));
 		}
-	}
 
-	private void createSubSets() {
 		shift = new ArrayList<Integer>();
 		shift.addAll(Arrays.asList(1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1)); 
 		for(int i=1; i<17; i++) {
@@ -138,8 +136,5 @@ public class Key {
 		}
 
 	}
-
-
-
 
 }
