@@ -55,6 +55,15 @@ public class Block {
 	public int getSize() {
 		return block.size();
 	}
+	
+	public void permutate(ArrayList<Integer> list) {
+		ArrayList<Boolean> block = new ArrayList<Boolean>();
+		
+		for(Integer p : list) {
+			block.add(this.block.get(p-1));
+		}
+		this.block = block;
+	}
 
 }
 

@@ -35,7 +35,7 @@ public class Key {
 				44, 49, 39, 56, 34, 53,
 				46, 42, 50, 36, 29, 32));
 		//keyBlock.blockDisplay();
-		permutateKey(keyBlock, 1);
+		keyBlock.permutate(this.pc1);
 		//keyBlock.blockDisplay();
 		leftAndRight();
 
@@ -51,18 +51,7 @@ public class Key {
 
 	}
 
-	private void permutateKey(Block key, int i) {
-		ArrayList<Boolean> block = new ArrayList<Boolean>();
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		
-		if(i==1) list = this.pc1;
-		else if(i==2) list = this.pc2;
-		else System.err.println("permutateKey1 i neither 0 nor 1");
-		for(Integer p : list) {
-			block.add(key.getBlockElement(p-1));
-		}
-		key.updateBlock(block);
-	}
+	
 
 	private void testKey() {
 		List<Integer> test = new ArrayList<Integer>();
@@ -145,7 +134,7 @@ public class Key {
 			for(int j=0; j< 28; j++) {
 				subKeys.get(i).addElement(rightSubSet.get(i).getBlockElement(j));
 			}
-			permutateKey(subKeys.get(i), 2);
+			subKeys.get(i).permutate(this.pc2);
 		}
 
 	}
