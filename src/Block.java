@@ -47,6 +47,10 @@ public class Block {
 	public Boolean getBlockElement(int i) {
 		return this.block.get(i);
 	}
+	
+	public ArrayList<Boolean> getBlock() {
+		return this.block;
+	}
 
 	public void addElement(Boolean b) {
 		this.block.add(b);

@@ -137,4 +137,8 @@ public class Key {
 
 	}
 
+	public Block getKey(int i) {
+		return subKeys.get(i);
+	}
+
 }

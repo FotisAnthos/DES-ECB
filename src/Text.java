@@ -32,7 +32,9 @@ public class Text {
 	
 	private void encryptBlock(Block b) {
 		for(int i=1; i<17; i++) {
-			
+			L.add(R.get(i-1));
+			key.getKey(i).
+			R.add(L.get(i-1) ^ (key.getKey(i).getBlock() ^ R.get(i-1).permutate(ebit)));
 			
 			
 		}
