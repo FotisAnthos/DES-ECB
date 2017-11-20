@@ -140,5 +140,7 @@ public class Key {
 	public Block getKey(int i) {
 		return subKeys.get(i);
 	}
-
+	public Boolean getKeyBits(int i, int j) {
+		return subKeys.get(i).getBlockElement(j);
+	}
 }
