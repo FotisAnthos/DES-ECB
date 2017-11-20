@@ -8,12 +8,13 @@ public class Key {
 	private ArrayList<Integer> shift;
 	private ArrayList<Block> leftSubSet;
 	private ArrayList<Block> rightSubSet;
+	private ArrayList<Block> subKeys;
 	private Block keyBlock;
 
 	public Key(String keyString) {
 		keyBlock = createBlock(keyString);
 		testKey();//keyBlock override
-		
+
 		pc1 = new ArrayList<Integer>();
 		pc2 = new ArrayList<Integer>();
 		pc1.addAll(Arrays.asList(57, 49, 41, 33, 25, 17, 9,
@@ -33,28 +34,34 @@ public class Key {
 				30, 40, 51, 45, 33, 48,
 				44, 49, 39, 56, 34, 53,
 				46, 42, 50, 36, 29, 32));
-		keyBlock.blockDisplay();
-		permutateKey1();
-		keyBlock.blockDisplay();
+		//keyBlock.blockDisplay();
+		permutateKey(keyBlock, 1);
+		//keyBlock.blockDisplay();
 		leftAndRight();
-		
-		
-		leftSubSet.get(0).blockDisplay();
-		rightSubSet.get(0).blockDisplay();
-		
+
+
+		//leftSubSet.get(0).blockDisplay();
+		//rightSubSet.get(0).blockDisplay();
+
 		createSubSets();
-		leftSubSet.get(4).blockDisplay();
-		rightSubSet.get(4).blockDisplay();
+		//leftSubSet.get(4).blockDisplay();
+		//rightSubSet.get(4).blockDisplay();
+		createSubKeys();
+		//subKeys.get(4).blockDisplay();
 
 	}
 
-	private void permutateKey1() {
+	private void permutateKey(Block key, int i) {
 		ArrayList<Boolean> block = new ArrayList<Boolean>();
-
-		for(Integer p : this.pc1) {
-			block.add(this.keyBlock.getBlockElement(p-1));
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		
+		if(i==1) list = this.pc1;
+		else if(i==2) list = this.pc2;
+		else System.err.println("permutateKey1 i neither 0 nor 1");
+		for(Integer p : list) {
+			block.add(key.getBlockElement(p-1));
 		}
-		this.keyBlock.updateBlock(block);
+		key.updateBlock(block);
 	}
 
 	private void testKey() {
@@ -92,7 +99,7 @@ public class Key {
 		}
 		return block;
 	}
-	
+
 	private void leftAndRight() {
 		leftSubSet = new  ArrayList<Block>();
 		rightSubSet = new  ArrayList<Block>();
@@ -105,7 +112,7 @@ public class Key {
 			rightSubSet.get(0).addElement(keyBlock.getBlockElement(i));
 		}
 	}
-	
+
 	private void createSubSets() {
 		shift = new ArrayList<Integer>();
 		shift.addAll(Arrays.asList(1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1)); 
@@ -123,12 +130,26 @@ public class Key {
 				leftSubSet.get(i).addElement(leftSubSet.get(i-1).getBlockElement(j));
 				rightSubSet.get(i).addElement(rightSubSet.get(i-1).getBlockElement(j));
 			}
-			
+
 		}
-		
 	}
-	
-	
+
+	private void createSubKeys() {
+		subKeys = new  ArrayList<Block>();
+		for(int i=0; i<17; i++) {
+			String subKeyName = "Key-" + i;
+			subKeys.add(new Block(subKeyName));
+			for(int j=0; j< 28; j++) {
+				subKeys.get(i).addElement(leftSubSet.get(i).getBlockElement(j));
+			}
+			for(int j=0; j< 28; j++) {
+				subKeys.get(i).addElement(rightSubSet.get(i).getBlockElement(j));
+			}
+			permutateKey(subKeys.get(i), 2);
+		}
+
+	}
+
 
 
 

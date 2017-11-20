@@ -25,6 +25,7 @@ public class Block {
 		int indic=100;
 		if(block.size() == 64) indic = 8;
 		else if(block.size() == 56) indic = 7;
+		else if(block.size() == 48) indic = 6;
 		//else System.err.println("Block.displayBlock() block size incorrect" + block.size());
 		System.out.println(this.name + " Size: "+ block.size());
 		for(boolean b : block) {

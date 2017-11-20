@@ -5,7 +5,7 @@ public class Main {
 		String initialtext = "ANTHOPOU";
 		String keyString = "F46E986435465354";
 
-		//Text text = new Text(initialtext);
+		Text text = new Text(initialtext);
 		Key key = new Key(keyString);
 
 
