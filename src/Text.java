@@ -20,14 +20,14 @@ public class Text {
 		init(initialtext);
 
 
-		testText();
+		//testText();
 		//System.out.println("ini");
 		//blockList.get(0).blockDisplay();
-
+		
 		blockList.add(blockList.get(0).permutate(ip));
-		//System.out.println("ip");
-		//blockList.get(0).blockDisplay();
-		encrypt();
+		System.out.println("ip");
+		blockList.get(0).blockDisplay();
+		//encrypt();
 	}
 
 	private void encrypt() {
@@ -45,23 +45,26 @@ public class Text {
 
 		createInitialSubSets(b);
 		for(int n=1; n<17; n++) {
+
 			L.add(R.get(n-1));
 			x.clear();
+			System.out.println(n);
 			temp = fFunction(R.get(n-1), this.key.getKey(n));
-			
-			for(int j=0; j<this.key.getKey(n).getSize(); j++ ) {
+
+			for(int j=0; j<temp.size(); j++ ) {
 				temp1 = L.get(n-1).getBlockElement(j) ^ temp.get(j);
 				x.add(temp1);
 				//System.out.println(j);
 				//Rn = (Ln-1) ^ ((Kn-1) ^ E(R(n-1))
 			}
+			R.add(new Block(null));
+			R.get(n).updateBlock(x);
 
-			t.updateBlock(x);
-			t.blockDisplay();
-			bBlockList.add(t);
+			//R.get(n).blockDisplay();			
+			//L.get(n).blockDisplay();
 		}
-
 	}
+
 	private ArrayList<Boolean> fFunction(Block R, Block Key) {
 		Boolean temp;
 		int sindex=0;
@@ -74,7 +77,7 @@ public class Text {
 			temp = (Key.getBlockElement(j)) ^ t.getBlockElement(j);
 			B.add(temp);
 		}
-		
+
 		ArrayList<Boolean> tempo = new ArrayList<Boolean>();
 		for(int i=0; i< B.size(); i++) {
 			tempo.add(B.get(i));
@@ -83,12 +86,13 @@ public class Text {
 				sindex++;
 				tempo.clear();
 			}
-			
+
 		}
+		System.out.println(f.size());
 		t.updateBlock(f);
+		t.updateBlock(t.permutate(p).getBlock());
 		//System.out.println(f.toString());
 		//t.blockDisplay();
-		t.updateBlock(t.permutate(p).getBlock());
 		return t.getBlock();
 
 	}
@@ -107,11 +111,11 @@ public class Text {
 		int column = getValue(b);
 
 		int ret = sBoxes.get(sBoxIndex).get(row*15 + column);
+
 		ArrayList<Boolean> bits = new ArrayList<>();
 		for (int i = 3; i >= 0; i--) {
 			bits.add((ret & (1 << i)) != 0);
 		}
-		
 		return bits;
 	}
 
@@ -166,6 +170,7 @@ public class Text {
 	}
 
 	private void init(String initialtext) {		
+		System.out.println("\n\n***Text***");
 		this.blockList = new ArrayList<Block>();
 		this.bBlockList = new ArrayList<Block>();
 		this.sBoxes = new ArrayList<ArrayList<Integer>>() ;
