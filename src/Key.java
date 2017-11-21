@@ -11,8 +11,10 @@ public class Key {
 	private ArrayList<Block> subKeys;
 	private Block keyBlock;
 
+
 	public Key(String keyString) {
 		keyBlock = createBlock(keyString);
+		Block temp = createBlock(keyString);
 		testKey();//keyBlock override
 
 		pc1 = new ArrayList<Integer>();
@@ -35,10 +37,9 @@ public class Key {
 				44, 49, 39, 56, 34, 53,
 				46, 42, 50, 36, 29, 32));
 		//keyBlock.blockDisplay();
-		keyBlock.permutate(this.pc1);
+		temp = (keyBlock.permutate(this.pc1));
+		keyBlock = temp;
 		//keyBlock.blockDisplay();
-
-
 		createSubSets();
 		//leftSubSet.get(0).blockDisplay();
 		//rightSubSet.get(0).blockDisplay();
@@ -50,27 +51,6 @@ public class Key {
 	}
 
 
-
-	private void testKey() {
-		List<Integer> test = new ArrayList<Integer>();
-		test.addAll(Arrays.asList(0, 0, 0, 1, 0, 0, 1, 1,
-				0, 0, 1, 1, 0, 1, 0, 0,
-				0, 1, 0, 1, 0, 1, 1, 1, 
-				0, 1, 1, 1, 1, 0, 0, 1, 
-				1, 0, 0, 1, 1, 0, 1, 1, 
-				1, 0, 1, 1, 1, 1, 0, 0, 
-				1, 1, 0, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 0, 0, 0, 1));
-		ArrayList<Boolean> block = new ArrayList<Boolean>();
-		for (int i = 0; i < test.size(); i++){
-			//String temp = intToString(c);
-			if(test.get(i) == 1)
-				block.add(Boolean.TRUE);//when bit is 1
-			else
-				block.add(Boolean.FALSE);//when bit is 0	
-		}
-		keyBlock.updateBlock(block);
-	}
 
 	private Block createBlock(String key) {//key block
 		Block block = new Block("Key");
@@ -117,24 +97,24 @@ public class Key {
 				leftSubSet.get(i).addElement(leftSubSet.get(i-1).getBlockElement(j));
 				rightSubSet.get(i).addElement(rightSubSet.get(i-1).getBlockElement(j));
 			}
-
 		}
 	}
 
 	private void createSubKeys() {
 		subKeys = new  ArrayList<Block>();
-		for(int i=0; i<17; i++) {
+		
+		for(int i=1; i<17; i++) {
 			String subKeyName = "Key-" + i;
 			subKeys.add(new Block(subKeyName));
+			Block temp = new  Block(subKeyName);
 			for(int j=0; j< 28; j++) {
-				subKeys.get(i).addElement(leftSubSet.get(i).getBlockElement(j));
+				temp.addElement(leftSubSet.get(i).getBlockElement(j));
 			}
 			for(int j=0; j< 28; j++) {
-				subKeys.get(i).addElement(rightSubSet.get(i).getBlockElement(j));
+				temp.addElement(rightSubSet.get(i).getBlockElement(j));
 			}
-			subKeys.get(i).permutate(this.pc2);
+			subKeys.add(temp.permutate(this.pc2));
 		}
-
 	}
 
 	public Block getKey(int i) {
@@ -142,5 +122,26 @@ public class Key {
 	}
 	public Boolean getKeyBits(int i, int j) {
 		return subKeys.get(i).getBlockElement(j);
+	}
+
+	private void testKey() {
+		List<Integer> test = new ArrayList<Integer>();
+		test.addAll(Arrays.asList(0, 0, 0, 1, 0, 0, 1, 1,
+				0, 0, 1, 1, 0, 1, 0, 0,
+				0, 1, 0, 1, 0, 1, 1, 1, 
+				0, 1, 1, 1, 1, 0, 0, 1, 
+				1, 0, 0, 1, 1, 0, 1, 1, 
+				1, 0, 1, 1, 1, 1, 0, 0, 
+				1, 1, 0, 1, 1, 1, 1, 1, 
+				1, 1, 1, 1, 0, 0, 0, 1));
+		ArrayList<Boolean> block = new ArrayList<Boolean>();
+		for (int i = 0; i < test.size(); i++){
+			//String temp = intToString(c);
+			if(test.get(i) == 1)
+				block.add(Boolean.TRUE);//when bit is 1
+			else
+				block.add(Boolean.FALSE);//when bit is 0	
+		}
+		keyBlock.updateBlock(block);
 	}
 }

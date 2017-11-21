@@ -13,19 +13,20 @@ public class Text {
 	private Key key;
 	private ArrayList<ArrayList<Integer>> sBoxes;
 	private ArrayList<Integer> finalPerm;
+	private ArrayList<Integer> p;
 
-	public Text(String initialtext, Key key) {
-		this.key = key;
+	public Text(String initialtext, String keyString) {
+		this.key = new Key(keyString);
 		init(initialtext);
 
 
 		testText();
+		//System.out.println("ini");
 		//blockList.get(0).blockDisplay();
-		blockList.get(0).permutate(ip);
+
+		blockList.add(blockList.get(0).permutate(ip));
+		//System.out.println("ip");
 		//blockList.get(0).blockDisplay();
-		blockList.get(0).permutate(ebit);
-		//blockList.get(0).blockDisplay();
-		createSubSets(0);
 		encrypt();
 	}
 
@@ -36,63 +37,84 @@ public class Text {
 	}
 
 	private void encryptBlock(Block b) {
-		Boolean temp, temp1;
-		Block t = new Block(null);
-		for(int i=1; i<17; i++) {
-			L.add(R.get(i-1));
-			R.get(i-1).permutate(ebit);
-			x.clear();
+		Boolean temp1;
 
-			for(int j=0; j<this.key.getKey(i).getSize(); j++ ) {
-				temp = (this.key.getKey(i).getBlockElement(j) ^ R.get(i).getBlockElement(j));
-				temp1 = L.get(i-1).getBlockElement(j) ^ temp;
+		ArrayList<Boolean> B = new ArrayList<>();
+		ArrayList<Boolean> temp = new ArrayList<>();
+		Block t = new Block(null);
+
+		createInitialSubSets(b);
+		for(int n=1; n<17; n++) {
+			L.add(R.get(n-1));
+			x.clear();
+			temp = fFunction(R.get(n-1), this.key.getKey(n));
+			
+			for(int j=0; j<this.key.getKey(n).getSize(); j++ ) {
+				temp1 = L.get(n-1).getBlockElement(j) ^ temp.get(j);
 				x.add(temp1);
+				//System.out.println(j);
 				//Rn = (Ln-1) ^ ((Kn-1) ^ E(R(n-1))
 			}
-			
+
 			t.updateBlock(x);
+			t.blockDisplay();
 			bBlockList.add(t);
 		}
-		int sindex=0;
-		ArrayList<Boolean> B = new ArrayList<>();
-		ArrayList<Boolean> preFinal = new ArrayList<>();
-		for(int i=1; i<= t.getSize(); i++) {
-			B.add(t.getBlockElement(i-1));
-			if(i%6==0) {
-				preFinal.addAll(sBox(sindex, B));
-				sindex++;
-				B.clear();
-			}
-		}
-		Block Final = new Block("Final");
-		Final.updateBlock(preFinal);
-		Final.permutate(finalPerm);
-		Final.blockDisplay();
 
 	}
-	
+	private ArrayList<Boolean> fFunction(Block R, Block Key) {
+		Boolean temp;
+		int sindex=0;
+		ArrayList<Boolean> B = new ArrayList<Boolean>();
+		ArrayList<Boolean> f = new ArrayList<Boolean>();
+		Block t = new Block(null);
+		t = R.permutate(ebit);
+		R.updateBlock(t.getBlock());
+		for(int j=0; j<Key.getSize(); j++ ) {
+			temp = (Key.getBlockElement(j)) ^ t.getBlockElement(j);
+			B.add(temp);
+		}
+		
+		ArrayList<Boolean> tempo = new ArrayList<Boolean>();
+		for(int i=0; i< B.size(); i++) {
+			tempo.add(B.get(i));
+			if(tempo.size() == 6) {
+				f.addAll((sBox(sindex, tempo)));
+				sindex++;
+				tempo.clear();
+			}
+			
+		}
+		t.updateBlock(f);
+		//System.out.println(f.toString());
+		//t.blockDisplay();
+		t.updateBlock(t.permutate(p).getBlock());
+		return t.getBlock();
+
+	}
+
 	private ArrayList<Boolean> sBox(int sBoxIndex, ArrayList<Boolean> B) {
 		ArrayList<Boolean> b = new ArrayList<>();
 		b.add(B.get(0));
 		b.add(B.get(1));
 		int row = getValue(b);
-		
+
 		b.clear();
+		b.add(B.get(2));
 		b.add(B.get(3));
 		b.add(B.get(4));
 		b.add(B.get(5));
-		b.add(B.get(6));
 		int column = getValue(b);
-		
+
 		int ret = sBoxes.get(sBoxIndex).get(row*15 + column);
-		
 		ArrayList<Boolean> bits = new ArrayList<>();
-	    for (int i = 3; i >= 0; i--) {
-	        bits.add((ret & (1 << i)) != 0);
-	    }
-	    return bits;
+		for (int i = 3; i >= 0; i--) {
+			bits.add((ret & (1 << i)) != 0);
+		}
+		
+		return bits;
 	}
-	
+
 	private int getValue(ArrayList<Boolean> b) {//gets Bool array returns int
 		int i=0;
 		if(b.size() == 2) {
@@ -104,7 +126,7 @@ public class Text {
 			if(b.get(0)) i+=8;
 			if(b.get(1)) i+=4;
 			if(b.get(2)) i+=2;
-			if(b.get(4)) i+=1;
+			if(b.get(3)) i+=1;
 			return i;
 		}
 		else {
@@ -130,14 +152,16 @@ public class Text {
 		return block;
 	}
 
-	private void createSubSets(int index) {
+	private void createInitialSubSets(Block block) {
+		this.L = new ArrayList<Block>();
+		this.R = new ArrayList<Block>();
 		L.add(new Block("Left-0"));
 		R.add(new Block("Right-0"));
-		for(int i= 0; i<28; i++) {
-			L.get(0).addElement(blockList.get(index).getBlockElement(i));
+		for(int i= 0; i<(block.getSize()/2); i++) {
+			L.get(0).addElement(block.getBlockElement(i));
 		}
-		for(int i= 28; i<56; i++) {
-			L.get(0).addElement(blockList.get(index).getBlockElement(i));
+		for(int i= (block.getSize()/2); i<block.getSize(); i++) {
+			R.get(0).addElement(block.getBlockElement(i));
 		}
 	}
 
@@ -146,10 +170,10 @@ public class Text {
 		this.bBlockList = new ArrayList<Block>();
 		this.sBoxes = new ArrayList<ArrayList<Integer>>() ;
 		this.x = new ArrayList<Boolean>();
-		this.L = new ArrayList<Block>();
-		this.R = new ArrayList<Block>();
+
 		ip = new ArrayList<Integer>();
 		ebit = new ArrayList<Integer>();
+		p = new ArrayList<Integer>();
 
 		int i=0;
 		String substring="";
@@ -180,14 +204,22 @@ public class Text {
 				61, 53, 45, 37, 29, 21, 13, 5,
 				63, 55, 47, 39, 31, 23, 15, 7));
 		ebit.addAll(Arrays.asList(
-				58, 50, 42, 34, 26, 18, 10, 2,
-				60, 52, 44, 36, 28, 20, 12, 4,
-				62, 54, 46, 38, 30, 22, 14, 6,
-				64, 56, 48, 40, 32, 24, 16, 8,
-				57, 49, 41, 33, 25, 17, 9, 1,
-				59, 51, 43, 35, 27, 19, 11, 3,
-				61, 53, 45, 37, 29, 21, 13, 5,
-				63, 55, 47, 39, 31, 23, 15, 7));
+				32,1,2,3,4,5,
+				4,5,6,7,8,9,
+				8,9,10,11,12,13,
+				12,13,14,15,16,17,
+				16,17,18,19,20,21,
+				20,21,22,23,24,25,
+				24,25,26,27,28,29,
+				28,29,30,31,32,1));
+		p.addAll(Arrays.asList(16,7,20,21,
+				29,12,28,17,
+				1,15,23,26,
+				5,18,31,10,
+				2,8,24,14,
+				32,27,3,9,
+				19,13,30,6,
+				22,11,4,25));
 
 		//sBoxes ini
 		ArrayList<Integer> sBox= new ArrayList<Integer>() ;
@@ -248,7 +280,7 @@ public class Text {
 				2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11));
 		sBoxes.add(sBox);
 		sBox.clear();
-		
+
 		finalPerm= new ArrayList<Integer>() ;
 		sBox.addAll(Arrays.asList(13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7,
 				1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2,

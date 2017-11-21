@@ -60,13 +60,15 @@ public class Block {
 		return block.size();
 	}
 	
-	public void permutate(ArrayList<Integer> list) {
-		ArrayList<Boolean> block = new ArrayList<Boolean>();
-		
+	
+	public Block permutate(ArrayList<Integer> list) {
+		Boolean b;
+		Block block = new Block(null);
 		for(Integer p : list) {
-			block.add(this.block.get(p-1));
+			b = this.block.get(p-1);
+			block.addElement(b);
 		}
-		this.block = block;
+		return block;
 	}
 
 }
