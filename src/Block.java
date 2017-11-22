@@ -27,7 +27,7 @@ public class Block {
 		else if(block.size() == 56) indic = 7;
 		else if(block.size() == 48) indic = 6;
 		//else System.err.println("Block.displayBlock() block size incorrect" + block.size());
-		System.out.println(this.name + " Size: "+ block.size());
+		//System.out.println(this.name + " Size: "+ block.size());
 		for(boolean b : block) {
 			if(i%indic == 0 && i!=0) System.out.print(" ");
 			if(b) System.out.print("1");
@@ -47,6 +47,10 @@ public class Block {
 	public Boolean getBlockElement(int i) {
 		return this.block.get(i);
 	}
+	
+	public ArrayList<Boolean> getBlock() {
+		return this.block;
+	}
 
 	public void addElement(Boolean b) {
 		this.block.add(b);
@@ -56,13 +60,15 @@ public class Block {
 		return block.size();
 	}
 	
-	public void permutate(ArrayList<Integer> list) {
-		ArrayList<Boolean> block = new ArrayList<Boolean>();
-		
+	
+	public Block permutate(ArrayList<Integer> list) {
+		Boolean b;
+		Block block = new Block(null);
 		for(Integer p : list) {
-			block.add(this.block.get(p-1));
+			b = this.block.get(p-1);
+			block.addElement(b);
 		}
-		this.block = block;
+		return block;
 	}
 
 }
